@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "smile_ks_parsetokenize"
+version = "0.0.1"
+description = "Python wrapper Parser Knoweldge Source for SMILE"
+authors = [
+    { name = "Bart Gajderowicz", email = "bgajdero@gmail.com" },
+]
+requires-python = ">=3.9"
+readme = "README.md"
+
+# Requirements: This is done differently by poetry!
+#dependencies = [
+#    "git+https://github.com/csse-uoft/graphdb-importer"
+#]
+
+[project.urls]
+repository = "https://github.com/csse-uoft/smile-ks-parsetokenize"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["smile_ks_parsetokenize", "smile_ks_parsetokenize.*"]
+exclude = ["tests"]
+
+[tool.setuptools.package-data]
+"*" = ["*.*"]
+
+[tool.poetry]
+keywords = ['python', 'grpahdb', 'ontotext', 'sparql']
+classifiers= [
+    "Development Status :: 1 - Planning",
+    "Topic :: Database",
+    "Intended Audience :: Education",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3.10",
+    "Environment :: Console",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: Microsoft :: Windows",
+]
+

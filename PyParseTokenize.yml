@@ -1,0 +1,60 @@
+name: PyParseTokenize
+channels:
+  - conda-forge
+  - anaconda
+  - defaults
+dependencies:
+  - python=3.9
+  - nltk
+  - tqdm
+  - pandas==1.4.2
+  - rdflib
+  - pip
+  - pip:
+    - stanfordcorenlp 
+    - pyyaml
+    - unidecode
+    - SPARQLWrapper==2.0.0
+    - python-dateutil
+    - Werkzeug==2.3.7
+    - git+https://github.com/csse-uoft/owlready2.git
+    - git+https://github.com/csse-uoft/graphdb-importer
+    - git+https://github.com/csse-uoft/py2graphdb.git
+    - git+https://github.com/csse-uoft/smile-base.git
+
+
+
+
+
+# RUN pip install stanfordcorenlp 
+# RUN pip install pandas==1.4.2
+# RUN pip install Werkzeug==2.3.7
+# RUN pip install flask==2.2.2
+# RUN pip install unidecode 
+# RUN pip install pyyaml 
+# RUN pip install nltk
+# RUN pip install rdflib
+
+# # Install additional dependencies
+# # For nlp_parser.py
+# RUN python -m nltk.downloader punkt stopwords
+
+# RUN apt-get update && apt-get install -y swi-prolog
+
+# # Copy the necessary project files
+# COPY pyscript/ pyscript/
+
+# USER root
+# RUN chown -R ${USERNAME} pyscript/app/scripts/scroll
+
+# USER ${USERNAME}
+
+# RUN rm -rf    pyscript/app/scripts/scroll/data
+# RUN rm -rf    pyscript/app/scripts/scroll/models
+# RUN rm -rf    pyscript/app/scripts/scroll/res
+# RUN rm -rf    pyscript/app/scripts/scroll/stats
+
+# RUN mkdir -p  pyscript/app/scripts/scroll/data
+# RUN mkdir -p  pyscript/app/scripts/scroll/models
+# RUN mkdir -p  pyscript/app/scripts/scroll/res
+# RUN mkdir -p  pyscript/app/scripts/scroll/stats
