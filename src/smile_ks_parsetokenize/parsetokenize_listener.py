@@ -5,6 +5,7 @@ smile = default_world.get_ontology(CONFIG.NM)
 with smile:
     from py2graphdb.Models.graph_node import GraphNode, SPARQLDict, _resolve_nm
     from py2graphdb.utils.db_utils import resolve_nm_for_dict, PropertyList
+    from smile_ks_parsetokenize.utils import add_ks
 
     from smile_ks_parsetokenize.libs import nlp_parser
     from smile_base.Model.knowledge_source.knowledge_source import KnowledgeSource    
@@ -413,9 +414,7 @@ class ParseTokenize(KnowledgeSource):
 
 if __name__ == '__main__':
     print('ParseTokenize started')
-    pt_ks = Ks()
-    pt_ks.ALL_KS_FORMATS['Parse/Query'] = ['ParseQuery', False, ['Query'], ['Text']]
-    pt_ks.initialize_ks(ks_name='Parse/Query', field=pt_ks.ALL_KS_FORMATS['Parse/Query'])
+    add_ks.add_ks()
 
     with smile:
         ParseTokenize.process_ks_ars()

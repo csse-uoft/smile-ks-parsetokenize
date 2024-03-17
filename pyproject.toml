@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "smile_ks_parsetokenize"
 version = "0.0.1"
-description = "Python wrapper Parser Knoweldge Source for SMILE"
+description = "Python wrapper Parser Knowledge Source for SMILE"
 authors = [
     { name = "Bart Gajderowicz", email = "bgajdero@gmail.com" },
 ]

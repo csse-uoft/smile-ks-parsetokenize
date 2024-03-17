@@ -7,7 +7,6 @@ tmp
 src/tmp
 libs
 corenlp/stanford*
-init_*.py
 tokenizers
 *.sqlite
 .DS_Store
