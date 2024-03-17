@@ -1,7 +1,7 @@
 from owlready2 import default_world,onto_path, ObjectProperty, DataProperty, rdfs, Thing 
 onto_path.append('./smile_ks_parsetokenize/ontology_cache/')
 import re, os, tqdm
-from smile_ks_parsetokenize.parse_tokenize import ParseTokenize, Text, Trace, Ks, KSAR, Hypothesis, Word, Pos, CoRef, Dep, Text, Spo, Phrase, Ner, Ks, KSAR
+from smile_ks_parsetokenize.parsetokenize_listener import ParseTokenize, Text, Trace, Ks, KSAR, Hypothesis, Word, Pos, CoRef, Dep, Text, Spo, Phrase, Ner, Ks, KSAR
 
 from py2graphdb.config import config as CONFIG
 from py2graphdb.utils.db_utils import resolve_nm_for_dict, PropertyList, _resolve_nm
@@ -9,6 +9,7 @@ from py2graphdb.ontology.namespaces import ic, geo, cids, org, time, schema, sch
 from py2graphdb.ontology.operators import *
 
 from smile_base.utils import init_db
+from smile_ks_parsetokenize.utils import add_ks
 
 
 if not os.path.exists(CONFIG.LOG_DIR):
@@ -33,6 +34,7 @@ def gen_ksar(input:Text, trace:Trace):
 smile = default_world.get_ontology(CONFIG.NM)
 with smile:
     init_db.init_db()
+    add_ks.add_ks()
     init_db.load_owl('./smile_ks_parsetokenize/ontology_cache/cids.ttl')
 
     description = "St.Mary's Church provides hot meals and addiction support to homeless youth."

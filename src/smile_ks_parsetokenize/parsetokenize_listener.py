@@ -413,6 +413,9 @@ class ParseTokenize(KnowledgeSource):
 
 if __name__ == '__main__':
     print('ParseTokenize started')
+    pt_ks = Ks()
+    pt_ks.ALL_KS_FORMATS['Parse/Query'] = ['ParseQuery', False, ['Query'], ['Text']]
+    pt_ks.initialize_ks(ks_name='Parse/Query', field=pt_ks.ALL_KS_FORMATS['Parse/Query'])
 
     with smile:
         ParseTokenize.process_ks_ars()

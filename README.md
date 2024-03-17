@@ -58,7 +58,11 @@ Term 1, run:
 This will start a NLP server at [http://localhost:9000](http://localhost:9000). It will run in the background.
 
 Term 2: Run ParseTokenize example
-`conda activate PyQAWrapperQA1`
+`conda activate PyParseTokenize`
 `cd src`
 `python -m smile_ks_parsetokenize.main`
 
+## To run KnowledgeSource Listener
+`conda activate PyParseTokenize`
+`cd src`
+`python -m smile_ks_parsetokenize.parsetokenize_listener`
