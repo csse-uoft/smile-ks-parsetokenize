@@ -5,8 +5,8 @@ logs/*
 src/logs
 tmp
 src/tmp
-libs
-corenlp/stanford*
+
+src/smile_ks_parsetokenize/libs/corenlp/stanford*
 tokenizers
 *.sqlite
 .DS_Store
