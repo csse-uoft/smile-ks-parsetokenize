@@ -1,7 +1,7 @@
 from owlready2 import default_world,onto_path, ObjectProperty, DataProperty, rdfs, Thing 
 onto_path.append('./smile_ks_parsetokenize/ontology_cache/')
 import re, os, tqdm
-from smile_ks_parsetokenize.parsetokenize_listener import ParseTokenize, Text, Trace, Ks, KSAR, Hypothesis, Word, Pos, CoRef, Dep, Text, Spo, Phrase, Ner, Ks, KSAR
+from smile_ks_parsetokenize.listener import ParseTokenize, Text, Trace, Ks, KSAR, Hypothesis, Word, Pos, CoRef, Dep, Text, Spo, Phrase, Ner, Ks, KSAR
 
 from py2graphdb.config import config as CONFIG
 from py2graphdb.utils.db_utils import resolve_nm_for_dict, PropertyList, _resolve_nm

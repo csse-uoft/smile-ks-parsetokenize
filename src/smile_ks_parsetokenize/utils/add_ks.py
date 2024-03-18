@@ -6,6 +6,10 @@ with smile:
     from smile_base.Model.controller.ks import Ks
 
 def add_ks():
+    kss = Ks.search(props={smile.hasPyName:'ParseTokenize'}, how='all')
+    for ks in kss:
+        ks.delete()
+
     ALL_KS_FORMATS = {
         'Parse/Tokenize': ['ParseTokenize', False, ["Text"], ["Word", "Pos", "Dep", "CoRef"]]
     }

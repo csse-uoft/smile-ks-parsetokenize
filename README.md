@@ -44,7 +44,7 @@ Install [swi-prolog](https://www.swi-prolog.org/download/stable) for your enviro
   - `cd ../../../..`
 
 #### 4 Setup smile-ks-qa1
-`cd src`
+`cd src/smile_ks_parsetokenize`
 `conda env create -f PyParseTokenize.yml`
 `./scripts/setup_folders.sh`
 
@@ -65,4 +65,4 @@ Term 2: Run ParseTokenize example
 ## To run KnowledgeSource Listener
 `conda activate PyParseTokenize`
 `cd src`
-`python -m smile_ks_parsetokenize.parsetokenize_listener`
+`python -m smile_ks_parsetokenize.listener`

@@ -56,7 +56,7 @@ class ParseTokenize(KnowledgeSource):
         'Required Criteria':'criteria',
         'Service Description':'service_desc',
     }
-
+    current_ks_ar = None
     def __init__(self, hypothesis_ids, ks_ar, trace):
         fields = [v for v in Ks.ALL_KS_FORMATS.values() if v[0] == self.__class__.__name__][0]
         super().__init__(fields[1], fields[2], fields[3], trace, hypothesis_ids, ks_ar)
@@ -90,7 +90,7 @@ class ParseTokenize(KnowledgeSource):
             if len(ks_ar) > 0:
                 ks_ar = ks_ar[0]
                 cls.logger(trace_id=ks_ar.trace, text=f"Processing ks_ar with id: {ks_ar.id}")
-
+                cls.current_ks_ar = ks_ar
                 # Get the hypothesis ids from the ks_ar
                 in_hypo_ids = ks_ar.input_hypotheses
                 if len(in_hypo_ids) != 1:
@@ -417,5 +417,20 @@ if __name__ == '__main__':
     add_ks.add_ks()
 
     with smile:
-        ParseTokenize.process_ks_ars()
+        while True:
+            try:
+                ParseTokenize.process_ks_ars()
+            except KeyboardInterrupt:
+                print('interrupted!')
+                break
+            except Exception as e:
+                print(f"{type(e)}: {e}")
+                failed_ks_ar = ParseTokenize.current_ks_ar
+                org_status = failed_ks_ar.ks_status
+                failed_ks_ar.ks_status = -1
+                failed_ks_ar.save()
+                error_message = f"Failed KSAF: {failed_ks_ar} with ks_status={org_status}"
+                print(error_message)
+                ParseTokenize.logger(trace_id=failed_ks_ar.trace, text=error_message)
+                pass
 
