@@ -56,6 +56,7 @@ class ParseTokenize(KnowledgeSource):
         'Required Criteria':'criteria',
         'Service Description':'service_desc',
     }
+    current_trace = None
     current_ks_ar = None
     def __init__(self, hypothesis_ids, ks_ar, trace):
         fields = [v for v in Ks.ALL_KS_FORMATS.values() if v[0] == self.__class__.__name__][0]
@@ -90,6 +91,9 @@ class ParseTokenize(KnowledgeSource):
             if len(ks_ar) > 0:
                 ks_ar = ks_ar[0]
                 cls.logger(trace_id=ks_ar.trace, text=f"Processing ks_ar with id: {ks_ar.id}")
+                # Get the trace from the ks_ar
+                trace = Trace(inst_id=ks_ar.trace)
+                cls.current_trace = trace
                 cls.current_ks_ar = ks_ar
                 # Get the hypothesis ids from the ks_ar
                 in_hypo_ids = ks_ar.input_hypotheses
@@ -101,15 +105,13 @@ class ParseTokenize(KnowledgeSource):
                 if not isinstance(in_hypo, (smile.Text, smile.Sentence)): #check if Phras
                     raise(Exception(f"Bad Input Hypothesis Type {type(in_hypo)}"))
 
-                # Get the trace from the ks_ar
-                trace = Trace(inst_id=ks_ar.trace)
                 
                 # Construct an instance of the ks_object
                 ks_object = cls(hypothesis_ids=in_hypo_ids, ks_ar=ks_ar, trace=trace)
                 
                 # Call ks_object.set_input() with the necessary parameters
                 ks_ar.ks_status = 1
-                ks_object.set_input(description=in_hypo.content)
+                ks_object.set_input(description=in_hypo.content, in_hypo=in_hypo)
                 
                 ks_ar.ks_status = 2               
                 hypotheses = ks_object.get_outputs()
@@ -129,13 +131,14 @@ class ParseTokenize(KnowledgeSource):
                 ks_ar.summary(filename=filename)
 
                 ks_ar.ks_status = 3  
-
+                ParseTokenize.current_trace = None
+                ParseTokenize.current_ks_ar = None
                 if not loop:
                     return ks_ar                              
 
             time.sleep(1)        
 
-    def set_input(self, description):
+    def set_input(self, description, in_hypo):
         import shutil, os
         BASE_DIR = os.path.dirname(__file__)
 
@@ -144,6 +147,7 @@ class ParseTokenize(KnowledgeSource):
         if os.path.exists(BASE_DIR+'/libs/nlp_parser/scroll/res/'): shutil.rmtree(BASE_DIR+'/libs/nlp_parser/scroll/res/')
         if os.path.exists(BASE_DIR+'/libs/nlp_parser/scroll/stats/'): shutil.rmtree(BASE_DIR+'/libs/nlp_parser/scroll/stats/')
 
+        self.in_hypo = in_hypo
         self.store_hypotheses = []
         self.set_basics(description=description)
         self.set_ners()
@@ -264,6 +268,7 @@ class ParseTokenize(KnowledgeSource):
                 pos = Pos.find_generate(word_ids=[word.id], pos_tag=token["pos"],trace_id=self.trace.id, certainty=certainty)
                 pos.from_ks_ars = self.ks_ar.id
                 word.pos = pos.inst_id
+                self.in_hypo.words = word.id
                 self.store_hypotheses.append(pos)
 
         if self.annotation["Dep"] is not None:
@@ -308,7 +313,8 @@ class ParseTokenize(KnowledgeSource):
         self.df_spos = nlp_parser.generate_spos(id1=self.trace.id, id2=self.ks_ar.id, corenlp_output=self.corenlp_output)
 
     def get_spos(self):
-        for spo_id in self.df_spos["spo_id"].unique():
+        tmp = self.df_spos["spo_id"].unique()
+        for spo_id in tqdm.tqdm(tmp, total=len(tmp), desc='Spos'):
             this_spo_df = self.df_spos[self.df_spos["spo_id"] == spo_id]
             this_spo = {"s": None, "p": None, "o": None}
             for i, row in this_spo_df.iterrows():
@@ -425,12 +431,14 @@ if __name__ == '__main__':
                 break
             except Exception as e:
                 print(f"{type(e)}: {e}")
-                failed_ks_ar = ParseTokenize.current_ks_ar
-                org_status = failed_ks_ar.ks_status
-                failed_ks_ar.ks_status = -1
-                failed_ks_ar.save()
-                error_message = f"Failed KSAF: {failed_ks_ar} with ks_status={org_status}"
-                print(error_message)
-                ParseTokenize.logger(trace_id=failed_ks_ar.trace, text=error_message)
+                if ParseTokenize.current_ks_ar is not None:
+                    failed_ks_ar = ParseTokenize.current_ks_ar
+                    org_status = failed_ks_ar.ks_status
+                    failed_ks_ar.ks_status = -1
+                    failed_ks_ar.save()
+                    error_message = f"Failed KSAF: {failed_ks_ar} with ks_status={org_status}"
+                    print(error_message)
+                if ParseTokenize.current_trace is not None:
+                    ParseTokenize.logger(trace_id=ParseTokenize.current_trace, text=error_message)
                 pass
 

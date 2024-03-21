@@ -33,7 +33,7 @@ from py2graphdb.utils.misc_lib import *
 import inspect
 import os
 
-BASE_DIR = os.path.dirname(__file__) + "/nlp_parser/tmp/scroll/"
+BASE_DIR = os.path.dirname(__file__) + "/nlp_parser/"
 
 
 print("Connecting to nlp_server at port=9000 ..... ")
@@ -273,7 +273,7 @@ def build_data_from_output(id1, id2, text, corenlp_output):
     resolve_coref(corenlp_output=corenlp_output)
     resolved_corefs = combine_resolved_coref(corenlp_output)
 
-    to_dir = f"{BASE_DIR}/data/{id1}/"
+    to_dir = f"{BASE_DIR}tmp/scroll/data/{id1}/"
     _ = os.makedirs(to_dir, exist_ok=True)
 
     indexed_sentences = pd.DataFrame(columns=['idx', 'indexed_text'])
@@ -299,7 +299,8 @@ def build_prolog_from_output(id1,id2, text, corenlp_output):
     build_prolog(id1=id1,id2=id2, text=text, triples=dep_triples, replaced_triples=replaced_resolved_corefs)
 
 def build_prolog(id1,id2, text, triples, replaced_triples):
-    to_dir = f"{BASE_DIR}/"
+    to_dir = f"{BASE_DIR}tmp/scroll/"
+    prolog_dir = f"{BASE_DIR}../scroll/"
 
     _ = os.makedirs(to_dir+f"data/{id1}", exist_ok=True)
 
@@ -308,7 +309,7 @@ def build_prolog(id1,id2, text, triples, replaced_triples):
     # print(triples)
     # print(os.getcwd())
     res_content = ":- style_check(-discontiguous).\n"
-    res_content += f":- ensure_loaded(\"{to_dir}prolog/parsing\").\n"
+    res_content += f":- ensure_loaded(\"{prolog_dir}prolog/parsing\").\n"
     res_content += ":- dynamic coref/1.\n"
     res_content += f"text(\"{text}\").\n"
     res_content += ("\n".join(
@@ -332,19 +333,19 @@ def build_prolog(id1,id2, text, triples, replaced_triples):
 
 
 def to_phrase_run_test(id1,id2):
-    to_dir = f"{BASE_DIR}/res/{id1}/"
+    to_dir = f"{BASE_DIR}tmp/scroll/res/{id1}/"
 
     _ = os.makedirs(to_dir, exist_ok=True)
 
     test_configs = [
         {'file': to_dir+f"{id2}_phrase_results.txt",
-        'cmd': "findall([W,D],(phrase_([_,D],W)),L),remove_duplicates(L,L2),L2\=[],text(Text),writeln([%s,Text]),findall(_,(member(T,L2),writeln([%s,T])),_)",
+        'cmd': "findall([W,D],(phrase_([_,D],W)),L),remove_duplicates(L,L2),L2\=[],text(Text),writeln(['%s',Text]),findall(_,(member(T,L2),writeln(['%s',T])),_)",
         'ids_n': 2},
         {'file': to_dir+f"{id2}_phrase_pos_results.txt",
-        'cmd': "findall([W,D],(phrase_pos([_,D],W)),L),remove_duplicates(L,L2),L2\=[],text(Text),writeln([%s,Text]),findall(_,(member(T,L2),writeln([%s,T])),_)",
+        'cmd': "findall([W,D],(phrase_pos([_,D],W)),L),remove_duplicates(L,L2),L2\=[],text(Text),writeln(['%s',Text]),findall(_,(member(T,L2),writeln(['%s',T])),_)",
         'ids_n': 2},
         {'file' : to_dir+f"{id2}_spo_results.txt",
-        'cmd'  : "findall([W,D],(spo(D,W)),L),remove_duplicates(L,L2),L2\=[],text(Text),writeln([%s,Text]),findall(_,(member(T,L2),writeln([%s,T])),_)",
+        'cmd'  : "findall([W,D],(spo(D,W)),L),remove_duplicates(L,L2),L2\=[],text(Text),writeln(['%s',Text]),findall(_,(member(T,L2),writeln(['%s',T])),_)",
         'ids_n'  : 2},
     ]
     output_files = run_test_configs(test_configs, id1=id1,id2=id2)
@@ -352,16 +353,16 @@ def to_phrase_run_test(id1,id2):
 
 
 def r_t_run_test(id1,id2):
-    from_dir = f"{BASE_DIR}/res/{id1}/"
+    from_dir = f"{BASE_DIR}tmp/scroll/res/{id1}/"
     _ = os.makedirs(from_dir, exist_ok=True)
 
     test_configs = [
         {'file': from_dir+f"{id2}_spo_qualifier_results.txt",
-        # 'cmd': "findall([W,D],(spo_qualifier(D,W)),L),remove_duplicates(L,L2),L2\=[],text(Text),writeln([%s,Text]),findall(_,(member(T,L2),writeln([%s,T])),_)",
+        # 'cmd': "findall([W,D],(spo_qualifier(D,W)),L),remove_duplicates(L,L2),L2\=[],text(Text),writeln(['%s',Text]),findall(_,(member(T,L2),writeln(['%s',T])),_)",
         'cmd':None,
         'ids_n': 2},
         {'file': from_dir+f"{id2}_spo_results.txt",
-        'cmd': "findall([W,D],(spo(D,W)),L),remove_duplicates(L,L2),L2\=[],text(Text),writeln([%s,Text]),findall(_,(member(T,L2),writeln([%s,T])),_)",
+        'cmd': "findall([W,D],(spo(D,W)),L),remove_duplicates(L,L2),L2\=[],text(Text),writeln(['%s',Text]),findall(_,(member(T,L2),writeln(['%s',T])),_)",
         'ids_n': 2},
     ]
     output_files = run_test_configs(test_configs, id1=id1,id2=id2)
@@ -375,7 +376,7 @@ def run_test_configs(test_configs, id1,id2):
 
 
 def run_test_config(test_config, id1,id2):
-    from_dir = f"{BASE_DIR}/data/{id1}/"
+    from_dir = f"{BASE_DIR}tmp/scroll/data/{id1}/"
 
     service_file = test_config['file']
     search_cmd = test_config['cmd']
@@ -398,12 +399,12 @@ def run_test_config(test_config, id1,id2):
 
 def r_e_run_test(id1,id2):
     # from_dir = 'pyscript/app/scripts/'
-    from_dir = f"{BASE_DIR}/"
+    from_dir = f"{BASE_DIR}tmp/scroll/"
 
     _ = os.makedirs(from_dir+f"data/{id1}/", exist_ok=True)
 
     test_config = {'file': from_dir+f"res/{id1}/{id2}_mod_results.txt",
-     'cmd': "findall([W,D],(mod_(D,W)),L),remove_duplicates(L,L2),L2\=[],text(Text),writeln([%s,Text]),findall(_,(member(T,L2),writeln([%s,T])),_)",
+     'cmd': "findall([W,D],(mod_(D,W)),L),remove_duplicates(L,L2),L2\=[],text(Text),writeln(['%s',Text]),findall(_,(member(T,L2),writeln(['%s',T])),_)",
      'ids_n': 2}
 
     output_file = run_test_config(test_config, id1,id2)
@@ -473,7 +474,7 @@ def res_file_to_df(filename, remove_text=True):
 
 
 def gen_spo_pos_df(id1,id2):
-    from_dir = f"{BASE_DIR}/res/"
+    from_dir = f"{BASE_DIR}tmp/scroll/res/"
 
     filename = from_dir+f"{id1}/{id2}_spo_results_format.txt"
     spo_df = res_file_to_df(filename).rename(columns={0: 's', 1: 'p', 2: 'o'}).reset_index(drop=True)
@@ -504,7 +505,7 @@ def gen_phrase_pos_rank(id1,id2):
     phrase_file_paths = to_phrase_run_test(id1=id1,id2=id2)
     for filepath in phrase_file_paths:
         _ = format_results(filepath)
-    from_dir = f"{BASE_DIR}/res/{id1}/"
+    from_dir = f"{BASE_DIR}tmp/scroll/res/{id1}/"
     filename = from_dir+f"{id2}_phrase_pos_results_format.txt"
 
     df = res_file_to_df(filename)
@@ -533,7 +534,7 @@ def gen_phrase_pos_rank(id1,id2):
 
 def calculate_parse_ranking(ranking_ids):
     # from_dir = 'pyscript/app/scripts/'
-    from_dir = f"{BASE_DIR}/"
+    from_dir = f"{BASE_DIR}../scroll/"
     if isinstance(ranking_ids, str):
         ranking_ids = ranking_ids.replace('|',',')
         ids = [float(r) for r in ranking_ids.split(',')]
@@ -600,7 +601,7 @@ def generate_sentence_with_term_indexes(triples):
 
 def from_mods(text, id1,id2):
     text_df = pd.DataFrame({"idx": 0, "Text": text}, index=[0])
-    from_dir = f"{BASE_DIR}/"
+    from_dir = f"{BASE_DIR}tmp/scroll/"
     stats_directory = from_dir+f"stats/{id1}/"
     _ = os.makedirs(stats_directory, exist_ok=True)
     annotation_out_filename = stats_directory + f"{id2}_annot_obj.csv"
@@ -758,7 +759,7 @@ def from_mods(text, id1,id2):
 
 
 def extract_entities(id1,id2,annotations, rule_weights, expand_low_entities=False):
-    to_dir = f"{BASE_DIR}/models/"
+    to_dir = f"{BASE_DIR}tmp/scroll/models/"
     _ = os.makedirs(to_dir+f"r_e/{id1}", exist_ok=True)
 
     res_df = rule_weights.copy()
@@ -1039,10 +1040,10 @@ def assign_rule_score_obj(tmp3_in):
 
 
 def generate_annotation_file(extracted_entities, label_mapping, id1,id2):
-    to_dir = f"{BASE_DIR}/models/{id1}"
+    to_dir = f"{BASE_DIR}tmp/scroll/models/{id1}"
     _ = os.makedirs(to_dir, exist_ok=True)
 
-    from_dir = f"{BASE_DIR}/"
+    from_dir = f"{BASE_DIR}tmp/scroll/"
     df = extracted_entities.copy()
     indexed_sentences = pd.read_csv(from_dir+f"data/{id1}/{id2}_indexed_sentences.csv")
     _,mapping,_,_ = score_cols_and_mapping()
@@ -1122,7 +1123,7 @@ def generate_annotation_file(extracted_entities, label_mapping, id1,id2):
 
 def generate_annotations(id1,id2, text, rule_weights):
     import os
-    to_dir = f"{BASE_DIR}/"
+    to_dir = f"{BASE_DIR}tmp/scroll/"
     annotation_file = to_dir+f"stats/{id1}/{id2}_annot_obj.csv"
     if os.path.exists(annotation_file): os.remove(annotation_file)
     from_mods(text=text, id1=id1,id2=id2)
@@ -1143,7 +1144,7 @@ def generate_annotations(id1,id2, text, rule_weights):
 
 def collect_ner_tokens(id1,id2, text, rule_weights):
     import os
-    to_dir = f"{BASE_DIR}/"
+    to_dir = f"{BASE_DIR}tmp/scroll/"
     annotation_file = to_dir+f"stats/{id1}/{id2}_annot_obj.csv"
     if os.path.exists(annotation_file): os.remove(annotation_file)
     from_mods(text=text, id1=id1,id2=id2)

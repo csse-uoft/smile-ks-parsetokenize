@@ -3,8 +3,8 @@
 #################################################################################
 
 # Directory where Logs are placed
-LOG_DIR : "./logs/"
-LOG_FILE : "./logs/smile_trace_log.txt"
+LOG_DIR : "../../smile-controller/src/logs/"
+LOG_FILE : "../../smile-controller/src/logs/smile_trace_log.txt"
 
 ##############################################################################################
 # Server and repository
