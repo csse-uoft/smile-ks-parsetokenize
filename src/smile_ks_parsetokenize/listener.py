@@ -420,7 +420,8 @@ class ParseTokenize(KnowledgeSource):
 
 if __name__ == '__main__':
     print('ParseTokenize started')
-    add_ks.add_ks()
+    add_ks.add_ks(reload_db=False)
+    print('ParseTokenize ready')
 
     with smile:
         while True:

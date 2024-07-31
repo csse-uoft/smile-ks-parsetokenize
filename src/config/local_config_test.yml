@@ -4,7 +4,7 @@
 
 # Directory where Logs are placed
 LOG_DIR : "./logs/"
-LOG_FILE : "./logs//smile_trace_log.txt"
+LOG_FILE : "./logs/smile_trace_log.txt"
 ##############################################################################################
 # Server and repository
 ##############################################################################################
@@ -13,10 +13,10 @@ SERVER_URL : "http://localhost:7200"
 # Repository where graph is stored
 REPOSITORY : 'smile_test'
 # named graph where triples are stored, None if default graph
-GRAPH_NAME : "http://smile"
+GRAPH_NAME : "http://smile_test"
 
 # Default Namespace
-NM : "http://smile/#"
+NM : "http://smile_test/#"
 PREFIX : 'smile'
 
 DB_INDEX_FIELDS: []
